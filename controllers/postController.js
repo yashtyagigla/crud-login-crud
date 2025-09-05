@@ -1,4 +1,4 @@
-const Post =require('../models/Post');
+const Post = require('../models/post');
 
 exports.createPost = async(req,res) =>{
   try{
@@ -13,12 +13,14 @@ exports.createPost = async(req,res) =>{
 };
 
 exports.getMyPosts = async (req,res)=>{
+
   const posts = await Post.find({user:req.userId}).sort({createdAt:-1});
   return res.json({posts});
 };
 
 exports.getPostById = async(req,res)=>{
-  const post = await post.findOne({_id:req.userId});
+
+  const post = await post.findOne({_id:req.params.id});
   if(!post) return res.status(404).json({msg:'Post not found'});
   return res.json(post);
 };
