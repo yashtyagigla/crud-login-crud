@@ -7,7 +7,7 @@ dotenv.config();
 connectDB();
 
 const app =express();
-app.use(cors());
+app.options('*', cors());
 app.use(express.json());
 
 app.get ('/',(req, res)=> res.send("API is running.."));
