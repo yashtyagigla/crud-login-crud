@@ -14,5 +14,5 @@ app.get ('/',(req, res)=> res.send("API is running.."));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 7000;
 app.listen(PORT, ()=> console.log(`Backend running on http://localhost:${PORT}`));
