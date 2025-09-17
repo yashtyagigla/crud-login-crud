@@ -27,14 +27,24 @@ exports.getPostById = async(req,res)=>{
   return res.json(post);
 };
 
-exports.updatePost = async (req,res)=>{
-  const post = await Post.findOneAndUpdate(
-    {_id:req.params.id, user:req.userId},
-    { $set: { title, content, isPublic, imageUrl } },
-    {new:true}
-  );
-  if(!post) return res.status(404).json({msg:'Post not found or not yours'});
-  return res.json(post);
+exports.updatePost = async (req, res) => {
+  try {
+    const { title, content, isPublic, imageUrl } = req.body;
+
+    const post = await Post.findOneAndUpdate(
+      { _id: req.params.id, user: req.userId }, // only the owner can update
+      { $set: { title, content, isPublic, imageUrl } },
+      { new: true }
+    );
+
+    if (!post) {
+      return res.status(404).json({ msg: "Post not found or not yours" });
+    }
+
+    return res.json(post);
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
+  }
 };
 
 exports.deletePost = async(req,res)=>{
