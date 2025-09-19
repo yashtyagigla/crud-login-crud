@@ -10,6 +10,7 @@ connectDB();
 const app =express();
 
 const allowedOrigins = [
+  'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175'
@@ -44,6 +45,7 @@ app.use(express.json());
 app.get ('/',(req, res)=> res.send("API is running.."));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, ()=> console.log(`Backend running on http://localhost:${PORT}`));

@@ -1,17 +1,23 @@
 const Post = require('../models/post');
 
-exports.createPost = async(req,res) =>{
-  try{
-    console.log("Request body:", req.body); 
-    const {title, content, isPublic, imageUrl} = req.body;
-    if(!title || !content) return res.status(400).json({msg:"Title and content required"});
+exports.createPost = async (req, res) => {
+  try {
+    const { title, content, isPublic } = req.body;
+    if (!title || !content) return res.status(400).json({ msg: "Title and content required" });
 
-    const post =  await Post.create({title,content,isPublic: isPublic === true || isPublic === "true",
-    imageUrl,
-    user:req.userId});
-    return res.status(201).json({msg:'Post created',post});
-  }catch(e){
-    return res.status(500).json({msg:e.message});
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const post = await Post.create({
+      title,
+      content,
+      isPublic: isPublic === "true" || isPublic === true,
+      imageUrl,
+      user: req.userId
+    });
+
+    return res.status(201).json({ msg: "Post created", post });
+  } catch (e) {
+    return res.status(500).json({ msg: e.message });
   }
 };
 
@@ -29,21 +35,28 @@ exports.getPostById = async(req,res)=>{
 
 exports.updatePost = async (req, res) => {
   try {
-    const { title, content, isPublic, imageUrl } = req.body;
+    const { title, content, isPublic } = req.body;
+
+    const updateData = {
+      title,
+      content,
+      isPublic: isPublic === "true" || isPublic === true
+    };
+
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    }
 
     const post = await Post.findOneAndUpdate(
-      { _id: req.params.id, user: req.userId }, // only the owner can update
-      { $set: { title, content, isPublic, imageUrl } },
+      { _id: req.params.id, user: req.userId },
+      { $set: updateData },
       { new: true }
     );
 
-    if (!post) {
-      return res.status(404).json({ msg: "Post not found or not yours" });
-    }
-
+    if (!post) return res.status(404).json({ msg: "Post not found or not yours" });
     return res.json(post);
-  } catch (err) {
-    return res.status(500).json({ msg: err.message });
+  } catch (e) {
+    return res.status(500).json({ msg: e.message });
   }
 };
 
