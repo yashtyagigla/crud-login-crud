@@ -2,10 +2,10 @@ const Post = require('../models/post');
 
 exports.createPost = async (req, res) => {
   try {
-    const { title, content, isPublic } = req.body;
+    const { title, content, isPublic, imageUrl} = req.body;
     if (!title || !content) return res.status(400).json({ msg: "Title and content required" });
 
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    // const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
     const post = await Post.create({
       title,
