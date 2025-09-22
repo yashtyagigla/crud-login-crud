@@ -87,3 +87,71 @@ exports.getUserPublicPosts = async (req, res) => {
 
   return res.json(posts);
 };
+
+// Like Post
+exports.toggleLikePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) return res.status(404).json({ msg: "Post not found" });
+
+    // Ensure likes/dislikes are arrays
+    if (!Array.isArray(post.likes)) post.likes = [];
+    if (!Array.isArray(post.dislikes)) post.dislikes = [];
+
+    const userId = req.userId;
+
+    // If already liked, remove like
+    if (post.likes.includes(userId)) {
+      post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
+    } else {
+      // Add like and remove dislike if exists
+      post.likes.push(userId);
+      post.dislikes = post.dislikes.filter((id) => id.toString() !== userId.toString());
+    }
+
+    await post.save();
+
+    return res.json({
+      msg: "Post like toggled",
+      likes: post.likes.length,
+      dislikes: post.dislikes.length,
+    });
+  } catch (err) {
+    console.error("❌ toggleLikePost error:", err.message);
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
+// Dislike Post
+exports.toggleDislikePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) return res.status(404).json({ msg: "Post not found" });
+
+    // Ensure arrays exist
+    if (!Array.isArray(post.likes)) post.likes = [];
+    if (!Array.isArray(post.dislikes)) post.dislikes = [];
+
+    const userId = req.userId;
+
+    if (post.dislikes.includes(userId)) {
+      post.dislikes = post.dislikes.filter((id) => id.toString() !== userId.toString());
+    } else {
+      post.dislikes.push(userId);
+      post.likes = post.likes.filter((id) => id.toString() !== userId.toString());
+    }
+
+    await post.save();
+
+    return res.json({
+      msg: "Post dislike toggled",
+      likes: post.likes.length,
+      dislikes: post.dislikes.length,
+    });
+  } catch (err) {
+    console.error("❌ toggleDislikePost error:", err.message);
+    return res.status(500).json({ msg: err.message });
+  }
+};

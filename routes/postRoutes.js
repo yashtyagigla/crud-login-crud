@@ -1,7 +1,8 @@
 const express  = require('express');
 const auth = require('../middleWare/auth');
 const upload = require("../middleWare/upload");
-const {createPost,getMyPosts,getPostById,updatePost,deletePost,getPublicPosts,getUserPublicPosts} = require('../controllers/postController');
+const {createPost,getMyPosts,getPostById,updatePost,deletePost,getPublicPosts,getUserPublicPosts,toggleLikePost,
+  toggleDislikePost} = require('../controllers/postController');
 
 const router =express.Router();
 
@@ -14,6 +15,8 @@ router.get('/:id', auth, getPostById);
 router.delete('/:id',auth, deletePost);
 router.get("/post/public", getPublicPosts);
 router.get("/user/:id", getUserPublicPosts);
+router.post("/:id/like", auth, toggleLikePost);
+router.post("/:id/dislike", auth, toggleDislikePost);
 
 
 module.exports = router;

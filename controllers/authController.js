@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 exports.register = async(req,res) =>{
   try{
     const {name,email,password} = req.body;
+    console.log("verifying register data:", {name, email, password});
+    console.log("User model:", User);
     if(!name || !email || !password ) return res.status(400).json({msg:'All field required'});
 
     const exists = await User.findOne({email});
