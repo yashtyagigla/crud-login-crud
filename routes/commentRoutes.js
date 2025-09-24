@@ -5,7 +5,8 @@ const {
   addComment,
   getComments,
   toggleLikeComment,
-  toggleDislikeComment
+  toggleDislikeComment,
+  getUserComments
 } = require("../controllers/commentController");
 
 const router = express.Router();
@@ -14,9 +15,6 @@ const router = express.Router();
 router.post("/:postId", auth, upload.single("image"), addComment);
 router.get("/:postId", getComments);
 router.get("/user/:id", getUserComments);
-
-// Get all comments by a specific user
-router.get("/user/:id", getCommentsByUser);
 
 // Like/Dislike comments
 router.post("/:id/like", auth, toggleLikeComment);
