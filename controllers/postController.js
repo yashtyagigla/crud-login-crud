@@ -57,7 +57,7 @@ exports.updatePost = async (req, res) => {
     return res.json(post);
   } catch (e) {
     console.error("❌ Update error:", err.message);
-    return res.status(500).json({ msg: e.message });
+    return res.status(500).json({ msg: err.message });
   }
 };
 
