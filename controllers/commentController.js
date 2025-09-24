@@ -35,6 +35,39 @@ exports.getComments = async (req, res) => {
   }
 };
 
+exports.getUserComments = async (req, res) => {
+  try {
+    const comments = await Comment.find({ user: req.params.id })
+      .populate("post", "title _id")   // also show which post they commented on
+      .sort({ createdAt: -1 });
+
+    res.json(comments);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+// Get all comments made by a specific user
+exports.getCommentsByUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const comments = await Comment.find({ user: userId })
+      .populate("post", "title _id") // populate the post's title and id
+      .populate("user", "name _id")  // populate user details
+      .sort({ createdAt: -1 });      // latest first
+
+    if (!comments.length) {
+      return res.status(404).json({ msg: "No comments found for this user" });
+    }
+
+    return res.json(comments);
+  } catch (err) {
+    console.error("❌ getCommentsByUser error:", err.message);
+    return res.status(500).json({ msg: err.message });
+  }
+};
+
 // Toggle like on a comment
 exports.toggleLikeComment = async (req, res) => {
   try {

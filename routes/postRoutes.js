@@ -2,7 +2,7 @@ const express  = require('express');
 const auth = require('../middleWare/auth');
 const upload = require("../middleWare/upload");
 const {createPost,getMyPosts,getPostById,updatePost,deletePost,getPublicPosts,getUserPublicPosts,toggleLikePost,
-  toggleDislikePost} = require('../controllers/postController');
+  toggleDislikePost,getMyPrivatePosts} = require('../controllers/postController');
 
 const router =express.Router();
 
@@ -18,5 +18,7 @@ router.get("/user/:id", getUserPublicPosts);
 router.post("/:id/like", auth, toggleLikePost);
 router.post("/:id/dislike", auth, toggleDislikePost);
 
+// Get all private posts of logged-in user
+router.get("/private/mine", auth, getMyPrivatePosts);
 
 module.exports = router;

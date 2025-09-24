@@ -28,7 +28,7 @@ const posts = await Post.find({user:req.userId}).populate('user','name _id').sor
 
 exports.getPostById = async(req,res)=>{
 
-  const post = await post.findOne({_id:req.params.id});
+  const post = await Post.findOne({_id:req.params.id});
   if(!post) return res.status(404).json({msg:'Post not found'});
   return res.json(post);
 };

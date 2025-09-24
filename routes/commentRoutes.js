@@ -13,6 +13,10 @@ const router = express.Router();
 // Add & Get comments
 router.post("/:postId", auth, upload.single("image"), addComment);
 router.get("/:postId", getComments);
+router.get("/user/:id", getUserComments);
+
+// Get all comments by a specific user
+router.get("/user/:id", getCommentsByUser);
 
 // Like/Dislike comments
 router.post("/:id/like", auth, toggleLikeComment);
